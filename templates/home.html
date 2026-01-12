@@ -1,0 +1,39 @@
+<html>
+<body>
+    <p class="text-output" id="text-output">{{ text }}</p>
+    <br>
+    <select id="language-select">
+        <option value="en-GB">English (GB)</option>
+        <option value="en-US">English (US)</option>
+        <option value="ja-JP">Japanese</option>
+    </select>
+    <select id="voice-select">
+        {{ if language == "en-GB" }}
+            <option value="Brian">Male</option>
+            <option value="Amy">Female</option>
+        {{ elif language == "en-US" }}
+            <option value="Justin">Male</option>
+            <option value="Joanna">Female</option>
+        {{ elif language == "ja-JP" }}
+            <option value="Mizuki">Male</option>
+            <option value="Takumi">Female</option>
+        {{ endif }}
+    </select>
+    <button id="speak-button">Speak</button>
+
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+        document.getElementById('speak-button').addEventListener('click', () => {
+            const text = document.getElementById('text-output').value;
+            const language = document.getElementById('language-select').value;
+            puter.ai.txt2speech(text, language)
+                .then((audio) => {
+                    audio.play();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>

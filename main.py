@@ -1,19 +1,23 @@
 from pathlib import Path
-from openai import OpenAI
 from pypdf import PdfReader
+from flask import Flask, render_template
 
-client = OpenAI()
+app = Flask(__name__)
+
 speech_file_path = Path(__file__).parent / "speech.mp3"
 
-reader = PdfReader("sample.pdf")
+reader = PdfReader("Annabel_Lee_Edgar_Allan_Poe.pdf")
 text = ""
 for page in reader.pages:
-    extracted_text += page.text() + "\n"
+    text += page.extract_text() + "\n"
 
-with client.audio.speech.with_streaming_response.create(
-    model="gpt-4o-mini-tds",
-    voice="alloy",
-    input=extracted_text
-) as response:
-    response.stream_to_file(speech_file_path)
-    print(f"Speech audio saved to {speech_file_path}")
+extracted_text = text.strip()
+# print(extracted_text)
+
+@app.route("/")
+def home():
+    return render_template("home.html", text=extracted_text, speech_file=str(speech_file_path))
+
+if __name__ == "__main__":
+    app.run(debug=True)
+

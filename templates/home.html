@@ -1,32 +1,78 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>PDF Text Reading App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 <body>
-    <p class="text-output" id="text-output">{{ text }}</p>
-    <br>
-    <select id="language-select">
-        <option value="en-GB">English (GB)</option>
-        <option value="en-US">English (US)</option>
-        <option value="ja-JP">Japanese</option>
-    </select>
-    <select id="voice-select">
-        {{ if language == "en-GB" }}
-            <option value="Brian">Male</option>
-            <option value="Amy">Female</option>
-        {{ elif language == "en-US" }}
-            <option value="Justin">Male</option>
-            <option value="Joanna">Female</option>
-        {{ elif language == "ja-JP" }}
-            <option value="Mizuki">Male</option>
-            <option value="Takumi">Female</option>
-        {{ endif }}
-    </select>
-    <button id="speak-button">Speak</button>
+    <div class="container-1 text-center">
+        <p class="text-output" id="text-output">{{ text }}</p>
+    </div>
+    <div class="container-2 text-center">
+        <h3 class="select-label">Select Language and Voice</h3>
+        <select id="language-select" class="language-select">
+            <option value="en-GB">English (GB)</option>
+            <option value="en-US">English (US)</option>
+            <option value="ja-JP">Japanese</option>
+        </select>
+        <select id="voice-select" class="voice-select"></select>
+        <button id="speak-button" class="speak-button">Speak</button>
+        <div class="control-buttons">
+            <button id="play-button" class="control-btn"><i class="fa fa-play icon"></i></button>
+            <button id="pause-button" class="control-btn"><i class="fa fa-pause icon"></i></button>
+            <button id="stop-button" class="control-btn"><i class="fa fa-stop icon"></i></button>
+        </div>
+    </div>
 
     <script src="https://js.puter.com/v2/"></script>
     <script>
+        // selecting male/female voice based on language
+        const voicesByLanguage = {
+            "en-GB": [
+                { value: "Brian", label: "Male" },
+                { value: "Amy", label: "Female" }
+            ],
+            "en-US": [
+                { value: "Justin", label: "Male" },
+                { value: "Joanna", label: "Female" }
+            ],
+            "ja-JP": [
+                { value: "Takumi", label: "Male" },
+                { value: "Mizuki", label: "Female" }
+            ]
+        };
+        // get user inputs for language and voice
+        const languageSelect = document.getElementById("language-select");
+        const voiceSelect = document.getElementById("voice-select");
+
+        function updateVoices(language) {
+            voiceSelect.innerHTML = "";
+
+            voicesByLanguage[language].forEach(voice => {
+                const option = document.createElement("option");
+                option.value = voice.value;
+                option.textContent = voice.label;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        updateVoices(languageSelect.value);
+
+        languageSelect.addEventListener("change", (e) => {
+            updateVoices(e.target.value);
+        });
+        // play the text with language/voice selected
         document.getElementById('speak-button').addEventListener('click', () => {
-            const text = document.getElementById('text-output').value;
+            const text = document.getElementById('text-output').textContent;
             const language = document.getElementById('language-select').value;
-            puter.ai.txt2speech(text, language)
+            const voice = document.getElementById('voice-select').value;
+            puter.ai.txt2speech(text, {
+                    language: language,
+                    voice: voice
+                })
                 .then((audio) => {
                     audio.play();
                 })
@@ -34,6 +80,72 @@
                     console.error('Error:', error);
                 });
         });
+
+        // Initialize the speech synthesis object
+        const synth = window.speechSynthesis;
+        let utterance = null;
+        let isPaused = false;
+
+        // Get references to DOM elements
+        const textOutput = document.getElementById('text-output');
+        const playButton = document.getElementById('play-button');
+        const pauseButton = document.getElementById('pause-button');
+        const stopButton = document.getElementById('stop-button');
+
+        // Load voices
+        let voices = [];
+        function loadVoices() {
+            voices = synth.getVoices();
+        }
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function speakText() {
+            if (synth.speaking && !isPaused) return;
+
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                return;
+            }
+
+            const text = textOutput.textContent.trim();
+            if (text !== '') {
+                utterance = new SpeechSynthesisUtterance(text);
+
+                // Optionally select the first available voice
+                const voices = synth.getVoices();
+                if (voices.length > 0) utterance.voice = voices[0];
+
+                utterance.onend = () => {
+                    isPaused = false;
+                };
+
+                synth.speak(utterance);
+            }
+        }
+
+        function pauseText() {
+            if (synth.speaking && !isPaused) {
+                synth.pause();
+                isPaused = true;
+            }
+        }
+
+        function stopText() {
+            if (synth.speaking || isPaused) {
+                synth.cancel();
+                isPaused = false;
+            }
+        }
+
+        // Add event listeners
+        playButton.addEventListener('click', speakText);
+        pauseButton.addEventListener('click', pauseText);
+        stopButton.addEventListener('click', stopText);
+
     </script>
 </body>
 </html>

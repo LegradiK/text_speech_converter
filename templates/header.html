@@ -1,0 +1,18 @@
+<div class="container-1">
+    <div class="upload-title">
+        <h2>Upload PDF</h2>
+    </div>
+    <div class="upload-pdf">
+        <form action="{{ url_for('upload') }}"
+            method="POST"
+            enctype="multipart/form-data">
+            <div class="upload-actions">
+                <label for="pdf_file" class="browse-btn">Browse PDF</label>
+                <input id="pdf_file" type="file" name="pdf_file" accept="application/pdf" hidden>
+                <button type="submit" class="upload-btn">
+                    Upload PDF
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

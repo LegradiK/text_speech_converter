@@ -1,6 +1,18 @@
 <div class="container-1">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <div class="upload-title">
         <h2>Upload PDF</h2>
+        {% if pdf_file_name %}
+            <h3 class="pdf_file_title">File name: {{ pdf_file_name }}</h3>
+        {% endif %}
     </div>
     <div class="upload-pdf">
         <form action="{{ url_for('upload') }}"

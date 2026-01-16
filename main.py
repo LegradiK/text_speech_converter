@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from pypdf import PdfReader
-from flask import Flask, render_template, request, session, jsonify, redirect, url_for
+from flask import Flask, flash, render_template, request, session, jsonify, redirect, url_for
 
 
 load_dotenv(dotenv_path=Path(__file__).parent / "data.env")
@@ -11,12 +11,15 @@ app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 def extract_pdf_text(file):
+    file.seek(0)
     reader = PdfReader(file)
     text = ""
     for page in reader.pages:
         text += page.extract_text() + "\n"
 
     extracted_text = text.strip()
+
+    return extracted_text
     # print(extracted_text)
 
 @app.route("/", methods=["GET"])
@@ -27,14 +30,20 @@ def home():
 def upload():
     file = request.files.get("pdf_file")
 
-    if not file or not file.filename.lower().endswith(".pdf"):
+    if not file:
+        flash ("No file selected")
+        return redirect(url_for("home"))
+    if not file.filename.lower().endswith(".pdf"):
+        flash ("Invalid file type. Please upload a PDF file.")
         return redirect(url_for("home"))
 
+    filename = file.filename
     extracted_text = extract_pdf_text(file)
 
     return render_template(
         "home.html",
-        extracted_text=extracted_text
+        extracted_text=extracted_text,
+        pdf_file_name=filename
     )
 
 @app.route('/favicon.ico')

@@ -41,7 +41,7 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 22%;
+    height: 20%;
     width: calc(100% - 20vw);
     min-width: 400px;
     padding: 20px;
@@ -222,7 +222,7 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 78%;
+    height: 80%;
     width: calc(100% - 20vw);
     min-width: 400px;
     padding: 20px 50px 10px 20px;

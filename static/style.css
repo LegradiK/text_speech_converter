@@ -41,7 +41,7 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 20%;
+    height: 16%;
     width: calc(100% - 20vw);
     min-width: 400px;
     padding: 20px;
@@ -61,36 +61,18 @@ body{
     flex-direction: column;
     gap: 5px;
 }
-.browse-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    color: var(--text-color);
-    cursor: pointer;
-    margin-bottom: 10px;
-    text-align: center;
-}
 .upload-btn {
     display: block;
-    width: 108%;
+    width: 80%;
     padding: 10px;
     font-size: 16px;
     border: none;
     border-radius: 4px;
     color: var(--text-color);
     cursor: pointer;
+    margin-top: 5px;
     margin-bottom: 10px;
     text-align: center;
-}
-
-.browse-btn {
-    background-color: var(--button-secondary);
-}
-.browse-btn:hover {
-    background-color: var(--button-secondary-hover);
 }
 .upload-btn {
     background-color: var(--button-primary);
@@ -222,7 +204,7 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 80%;
+    height: 84%;
     width: calc(100% - 20vw);
     min-width: 400px;
     padding: 20px 50px 10px 20px;

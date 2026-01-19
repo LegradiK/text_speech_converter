@@ -42,9 +42,23 @@
 
         const signOutBtn = document.getElementById('sign-out');
         if (signOutBtn) {
-            signOutBtn.addEventListener('click', async () => {
-                await puter.auth.signOut();
-                location.reload();
+            signOutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    // 1. Sign out from Puter
+                    await puter.auth.signOut();
+                    // 2. Clear Flask session
+                    await fetch('/puter-logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    // 3. Redirect
+                    window.location.href = "/";
+                } catch (err) {
+                    console.error('Sign-out failed:', err);
+                }
             });
         }
 
@@ -111,54 +125,50 @@
         const pauseButton = document.getElementById('pause-button');
         const stopButton = document.getElementById('stop-button');
 
-        // Load voices
-        let voices = [];
-        function loadVoices() {
-            voices = synth.getVoices();
-        }
-        loadVoices();
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = loadVoices;
-        }
+        async function playText() {
+            const text = textOutput.textContent.trim();
+            if (!text) return;
 
-        function speakText() {
-            if (synth.speaking && !isPaused) return;
-
-            if (isPaused) {
-                synth.resume();
-                isPaused = false;
+            // If audio exists and is paused → resume
+            if (audio && audio.paused) {
+                audio.play();
                 return;
             }
 
-            const text = textOutput.textContent.trim();
-            if (text !== '') {
-                utterance = new SpeechSynthesisUtterance(text);
-
-                // Optionally select the first available voice
-                const voices = synth.getVoices();
-                if (voices.length > 0) utterance.voice = voices[0];
-
-                utterance.onend = () => {
-                    isPaused = false;
-                };
-
-                synth.speak(utterance);
+            // If audio is already playing → restart
+            if (audio && !audio.paused) {
+                audio.currentTime = 0;
+                return;
             }
+
+            // Generate new speech
+            audio = await puter.ai.txt2speech(text, {
+                language: languageSelect.value,
+                voice: voiceSelect.value,
+            });
+
+            audio.onended = () => {
+                audio = null;
+            };
+
+            audio.play();
         }
 
         function pauseText() {
-            if (synth.speaking && !isPaused) {
-                synth.pause();
-                isPaused = true;
+            if (audio && !audio.paused) {
+                audio.pause();
             }
         }
 
         function stopText() {
-            if (synth.speaking || isPaused) {
-                synth.cancel();
-                isPaused = false;
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+                audio = null;
             }
         }
+
+
 
         // Add event listeners
         playButton.addEventListener('click', speakText);

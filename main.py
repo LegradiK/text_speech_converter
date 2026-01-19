@@ -61,6 +61,11 @@ def puter_login():
 
     return jsonify({'success': True})
 
+@app.route('/puter-logout', methods=['POST'])
+def puter_logout():
+    session.pop('user', None)
+    return jsonify({'success': True})
+
 if __name__ == "__main__":
     app.run(debug=True)
 

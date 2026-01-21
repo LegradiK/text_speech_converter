@@ -97,61 +97,48 @@
         languageSelect.addEventListener("change", (e) => {
             updateVoices(e.target.value);
         });
+
         // play the text with language/voice selected
-        document.getElementById('speak-button').addEventListener('click', () => {
-            const text = document.getElementById('text-output').textContent;
-            const language = document.getElementById('language-select').value;
-            const voice = document.getElementById('voice-select').value;
-            puter.ai.txt2speech(text, {
-                    language: language,
-                    voice: voice
-                })
-                .then((audio) => {
-                    audio.play();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        });
+        let audio = null;
 
-        // Initialize the speech synthesis object
-        const synth = window.speechSynthesis;
-        let utterance = null;
-        let isPaused = false;
-
-        // Get references to DOM elements
-        const textOutput = document.getElementById('text-output');
+        // DOM references
         const playButton = document.getElementById('play-button');
         const pauseButton = document.getElementById('pause-button');
         const stopButton = document.getElementById('stop-button');
+
+        const textOutput = document.getElementById('text-output');
 
         async function playText() {
             const text = textOutput.textContent.trim();
             if (!text) return;
 
-            // If audio exists and is paused → resume
+            // Resume if paused
             if (audio && audio.paused) {
                 audio.play();
                 return;
             }
 
-            // If audio is already playing → restart
+            // Restart if already playing
             if (audio && !audio.paused) {
                 audio.currentTime = 0;
                 return;
             }
 
-            // Generate new speech
-            audio = await puter.ai.txt2speech(text, {
-                language: languageSelect.value,
-                voice: voiceSelect.value,
-            });
+            // Generate new audio
+            try {
+                audio = await puter.ai.txt2speech(text, {
+                    language: languageSelect.value,
+                    voice: voiceSelect.value,
+                });
 
-            audio.onended = () => {
-                audio = null;
-            };
+                audio.onended = () => {
+                    audio = null;
+                };
 
-            audio.play();
+                audio.play();
+            } catch (err) {
+                console.error('TTS error:', err);
+            }
         }
 
         function pauseText() {
@@ -168,12 +155,11 @@
             }
         }
 
-
-
-        // Add event listeners
-        playButton.addEventListener('click', speakText);
+        // Button bindings
+        playButton.addEventListener('click', playText);
         pauseButton.addEventListener('click', pauseText);
         stopButton.addEventListener('click', stopText);
+
 
     </script>
 

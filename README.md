@@ -31,7 +31,7 @@ A <a href="https://puter.com/">Puter</a> account is required to use this applica
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/LegradiK/text_speech_converter.git
 cd pdf-text-reading-app
 ```
 
@@ -39,7 +39,6 @@ cd pdf-text-reading-app
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # Linux
 ```
 
 3. Source a virtual environment:
@@ -48,13 +47,11 @@ source venv/bin/activate  # Linux
 source venv/bin/activate
 ```
 
-4. Run*
+4. Run the application
 ```bash
 python3 main.py
 ```
-
-*install any dependencies if you don't have
-<i>e.g.Flask, load_dotenv, PdfReader, Path, langdetect</i>
+ *Note:* Make sure to install any required dependencies if you don’t already have them, such as: *Flask, python-dotenv, PdfReader, pathlib, langdetect*
 
 5. Access the app at http://127.0.0.1:5000.
 
@@ -70,7 +67,7 @@ python3 main.py
 
 5. Use the Play, Pause, and Stop buttons to control the audio.*
 
-*If the language is unsupported, a message will appear, and audio controls will be disabled.
+*Note:* If the language is unsupported, a message will appear, and audio controls will be disabled.
 
 ## License and Attribution
 

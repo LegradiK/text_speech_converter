@@ -1,14 +1,25 @@
 import os
+import pdfplumber
 from dotenv import load_dotenv
 from pathlib import Path
 from pypdf import PdfReader
 from flask import Flask, flash, render_template, request, session, jsonify, redirect, url_for
-
+from langdetect import detect, DetectorFactory
 
 load_dotenv(dotenv_path=Path(__file__).parent / "data.env")
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
+
+SUPPORTED_LANGUAGES = {
+    "en": "English",
+    "ja": "Japanese",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "es": "Spanish"
+}
 
 def extract_pdf_text(file):
     file.seek(0)
@@ -21,6 +32,16 @@ def extract_pdf_text(file):
 
     return extracted_text
     # print(extracted_text)
+
+def detect_language(extracted_text):
+    DetectorFactory.seed = 0
+
+    language = detect(extracted_text)
+    if language in SUPPORTED_LANGUAGES:
+        return language
+    else:
+        return None
+
 
 @app.route("/", methods=["GET"])
 def home():
@@ -39,11 +60,15 @@ def upload():
 
     filename = file.filename
     extracted_text = extract_pdf_text(file)
+    language = detect_language(extracted_text)
+    print(language)
 
     return render_template(
         "home.html",
         extracted_text=extracted_text,
-        pdf_file_name=filename
+        pdf_file_name=filename,
+        language=language,
+        supported_languages=SUPPORTED_LANGUAGES.values()
     )
 
 @app.route('/favicon.ico')

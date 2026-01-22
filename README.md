@@ -24,7 +24,7 @@ A <a href="https://puter.com/">Puter</a> account is required to use this applica
 - Portuguese
 - Spanish
 
-*Unsupported languages display a message to inform the user.*
+*If PDF file contains unsupported languages, the app will display a message to inform the user.*
 
 ## Installation
 
@@ -67,14 +67,14 @@ python3 main.py
 
 5. Use the Play, Pause, and Stop buttons to control the audio.*
 
-*Note:* If the language is unsupported, a message will appear, and audio controls will be disabled.
+*Note:* If the language is unsupported, a message will appear, and audio controls will not appear.
 
 ## License and Attribution
 
 Icons used in this project are provided by Flaticon:
-<a href="https://www.flaticon.com/free-icons/play" title="play icons">Play icons created by Freepik - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/pause-button" title="pause button icons">Pause button icons created by inkubators - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/stop-button" title="stop button icons">Stop button icons created by Pixel perfect - Flaticon</a>
+<li><a href="https://www.flaticon.com/free-icons/play" title="play icons">Play icons created by Freepik - Flaticon</a><li>
+<li><a href="https://www.flaticon.com/free-icons/pause-button" title="pause button icons">Pause button icons created by inkubators - Flaticon</a><li>
+<li><a href="https://www.flaticon.com/free-icons/stop-button" title="stop button icons">Stop button icons created by Pixel perfect - Flaticon</a><li>
 
 ## Dependencies
 

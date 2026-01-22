@@ -1,5 +1,4 @@
 import os
-import pdfplumber
 from dotenv import load_dotenv
 from pathlib import Path
 from pypdf import PdfReader

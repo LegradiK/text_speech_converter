@@ -12,7 +12,6 @@ A <a href="https://puter.com/">Puter</a> account is required to use this applica
 - Play, pause, and stop audio playback.
 - User authentication using Puter Sign-in.
 - Clear message for unsupported languages.
-- Responsive and mobile-friendly design.
 
 ## Supported Languages
 
